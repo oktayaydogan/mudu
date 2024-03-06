@@ -61,22 +61,9 @@ while not terminate:
 
     start_day = 1
     value = (value + start_day) % 7
+    days = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"]
 
-    day_of_week = ""
-    if value == 1:
-        day_of_week = "Pazar"
-    elif value == 2:
-        day_of_week = "Pazartesi"
-    elif value == 3:
-        day_of_week = "Salı"
-    elif value == 4:
-        day_of_week = "Çarşamba"
-    elif value == 5:
-        day_of_week = "Perşembe"
-    elif value == 6:
-        day_of_week = "Cuma"
-    elif value == 0:
-        day_of_week = "Cumartesi"
+    day_of_week = days[value]
 
     days_in_month = 0
     if month in ['1', '3', '5', '7', '8', '10', '12']:
@@ -100,15 +87,17 @@ while not terminate:
     print("Pzt Sal Çar Per Cum Cmt Paz")
     print("----" * 7)
 
-    day = 1
+    template = "{:3} " * 7
 
-    for i in range(6):
-        for j in range(7):
-            if i == 0 and j < value:
-                print("    ", end=" ")
-            elif day > days_in_month:
-                break
-            else:
-                print(f"{day:3} ", end=" ")
-                day += 1
-        print()
+    i = 1
+    value -= 1
+    while i <= days_in_month:
+        line = []
+        for j in range(1, 8):
+            day = ""
+            if i != 1 or j >= value:
+                if i <= days_in_month:
+                    day = i
+                    i += 1
+            line.append(day)
+        print(template.format(*line))
