@@ -8,5 +8,5 @@ public interface TodoService {
     List<TodoDto> getAlTodos();
     TodoDto getTodo(String title);
     boolean saveTodo(TodoDto obj);
-    boolean update(TodoDto obj);
+    boolean updateTodo(TodoDto obj);
 }

@@ -2,6 +2,7 @@ package com.mstg.todo.controller;
 
 import com.mstg.todo.dto.TodoDto;
 import com.mstg.todo.service.impl.TodoService_Impl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,12 +10,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/todo/")
+@RequiredArgsConstructor
 public class TodoController {
     private final TodoService_Impl _todoService;
-
-    public TodoController(TodoService_Impl todoService) {
-        _todoService = todoService;
-    }
 
     @GetMapping("all")
     public ResponseEntity<List<TodoDto>> getAllTodos() {
@@ -68,7 +66,7 @@ public class TodoController {
 
     @PutMapping("update")
     public ResponseEntity<TodoDto> update(@RequestBody TodoDto dtoObj) {
-        boolean result = _todoService.update(dtoObj);
+        boolean result = _todoService.updateTodo(dtoObj);
 
         if (result)
             return ResponseEntity.status(200).body(TodoDto.builder()

@@ -62,7 +62,7 @@ public class TodoService_Impl implements TodoService {
     }
 
     @Override
-    public boolean update(TodoDto obj) {
+    public boolean updateTodo(TodoDto obj) {
         try {
             Todo todo = _todoRepository.findById(obj.getId()).orElse(null);
             if (todo != null) {
