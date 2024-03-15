@@ -5,11 +5,11 @@ import lombok.*;
 
 @Entity
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "my_todos")
-@Getter
-@Setter
 public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

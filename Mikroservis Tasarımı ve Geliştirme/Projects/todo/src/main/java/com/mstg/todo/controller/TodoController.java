@@ -1,6 +1,5 @@
 package com.mstg.todo.controller;
 
-import com.mstg.todo.dto.HelloDto;
 import com.mstg.todo.dto.TodoDto;
 import com.mstg.todo.service.impl.TodoService_Impl;
 import org.springframework.http.ResponseEntity;
@@ -11,28 +10,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/todo/")
 public class TodoController {
-
     private final TodoService_Impl _todoService;
 
     public TodoController(TodoService_Impl todoService) {
         _todoService = todoService;
-    }
-
-    @GetMapping("hello")
-    public ResponseEntity<HelloDto> hello(@RequestParam String name) {
-        if (!name.isEmpty())
-            /*
-            return "Hello " + name + "!";
-            return ResponseEntity.status(200).body("Hello " + name + "!");
-            */
-            return ResponseEntity.status(200).body(HelloDto.builder()
-                    .message("Hello " + name + "!")
-                    .build());
-        //return "Name is required";
-        //return ResponseEntity.status(400).body("Name is required");
-        return ResponseEntity.status(400).body(HelloDto.builder()
-                .message("Name is required!")
-                .build());
     }
 
     @GetMapping("all")
@@ -71,6 +52,30 @@ public class TodoController {
             return ResponseEntity.status(201).body(TodoDto.builder()
                     .message("Todo added successfully.")
                     .build());
-        return ResponseEntity.status(599).body(new TodoDto());
+        return ResponseEntity.status(400).body(TodoDto.builder()
+                .message("Todo could not be added.")
+                .build());
+    }
+
+    @GetMapping("get")
+    public ResponseEntity<TodoDto> getTodo(@RequestParam String title) {
+        TodoDto todo = _todoService.getTodo(title);
+
+        if (todo != null)
+            return ResponseEntity.status(200).body(todo);
+        return ResponseEntity.status(404).body(new TodoDto());
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<TodoDto> update(@RequestBody TodoDto dtoObj) {
+        boolean result = _todoService.update(dtoObj);
+
+        if (result)
+            return ResponseEntity.status(200).body(TodoDto.builder()
+                    .message("Todo updated successfully.")
+                    .build());
+        return ResponseEntity.status(400).body(TodoDto.builder()
+                .message("Todo could not be updated.")
+                .build());
     }
 }

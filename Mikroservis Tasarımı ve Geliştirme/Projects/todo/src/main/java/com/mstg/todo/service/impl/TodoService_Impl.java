@@ -7,7 +7,9 @@ import com.mstg.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,20 +18,32 @@ public class TodoService_Impl implements TodoService {
 
     @Override
     public List<TodoDto> getAlTodos() {
-        try {
-            List<Todo> todos = _todoRepository.findAll();
-            return todos.stream().map(todo -> TodoDto.builder()
-                    .title(todo.getTitle())
-                    .detail(todo.getDetail())
-                    .build()).toList();
-        } catch (Exception e) {
-            return null;
+        List<Todo> todos = _todoRepository.findAll();
+        if (!todos.isEmpty()) {
+            return todos.stream()
+                    .map(todo -> TodoDto.builder()
+                            .id(todo.getId())
+                            .title(todo.getTitle())
+                            .detail(todo.getDetail())
+                            .build())
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
         }
     }
 
     @Override
     public TodoDto getTodo(String title) {
-        return null;
+        try {
+            Todo todo = _todoRepository.findByTitle(title);
+            return TodoDto.builder()
+                    .id(todo.getId())
+                    .title(todo.getTitle())
+                    .detail(todo.getDetail())
+                    .build();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -49,6 +63,17 @@ public class TodoService_Impl implements TodoService {
 
     @Override
     public boolean update(TodoDto obj) {
-        return false;
+        try {
+            Todo todo = _todoRepository.findById(obj.getId()).orElse(null);
+            if (todo != null) {
+                todo.setTitle(obj.getTitle());
+                todo.setDetail(obj.getDetail());
+                _todoRepository.save(todo);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
