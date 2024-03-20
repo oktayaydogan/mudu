@@ -11,7 +11,6 @@ public class TodoDto {
     private Long id;
     private String title;
     private String detail;
-    private String message;
 
     /*
     public TodoDto() {}
