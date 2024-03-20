@@ -1,5 +1,6 @@
 package com.mstg.todo.controller;
 
+import com.mstg.todo.dto.ErrorDto;
 import com.mstg.todo.dto.TodoDto;
 import com.mstg.todo.service.impl.TodoService_Impl;
 import lombok.RequiredArgsConstructor;
@@ -43,14 +44,16 @@ public class TodoController {
     }
 
     @PostMapping("add")
-    public ResponseEntity<TodoDto> addTodo(@RequestBody TodoDto dtoObj) {
+    public ResponseEntity<ErrorDto> addTodo(@RequestBody TodoDto dtoObj) {
         boolean result = _todoService.saveTodo(dtoObj);
 
         if (result)
-            return ResponseEntity.status(201).body(TodoDto.builder()
+            return ResponseEntity.status(201).body(ErrorDto.builder()
+                    .code(201)
                     .message("Todo added successfully.")
                     .build());
-        return ResponseEntity.status(400).body(TodoDto.builder()
+        return ResponseEntity.status(400).body(ErrorDto.builder()
+                .code(400)
                 .message("Todo could not be added.")
                 .build());
     }
@@ -65,14 +68,15 @@ public class TodoController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<TodoDto> update(@RequestBody TodoDto dtoObj) {
+    public ResponseEntity<ErrorDto> update(@RequestBody TodoDto dtoObj) {
         boolean result = _todoService.updateTodo(dtoObj);
 
         if (result)
-            return ResponseEntity.status(200).body(TodoDto.builder()
+            return ResponseEntity.status(200).body(ErrorDto.builder()
+                    .code(200)
                     .message("Todo updated successfully.")
                     .build());
-        return ResponseEntity.status(400).body(TodoDto.builder()
+        return ResponseEntity.status(400).body(ErrorDto.builder()
                 .message("Todo could not be updated.")
                 .build());
     }
