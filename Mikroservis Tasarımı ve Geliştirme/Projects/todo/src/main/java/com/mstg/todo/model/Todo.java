@@ -16,9 +16,18 @@ public class Todo {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "TITLE")
+    @Column(name = "TITLE", unique = true)
     private String title;
 
     @Column(name = "DETAIL")
     private String detail;
+
+    @Column(name = "COMPLETED")
+    private boolean completed;
+
+    //    public Todo(String title, String detail) {
+    //        this.title = title;
+    //        this.detail = detail;
+    //        this.completed = false;
+    //    }
 }
