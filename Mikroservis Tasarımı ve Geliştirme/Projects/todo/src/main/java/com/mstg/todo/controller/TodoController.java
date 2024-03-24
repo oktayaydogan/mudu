@@ -2,8 +2,11 @@ package com.mstg.todo.controller;
 
 import com.mstg.todo.dto.ErrorDto;
 import com.mstg.todo.dto.TodoDto;
+import com.mstg.todo.model.Todo;
 import com.mstg.todo.service.impl.TodoService_Impl;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,8 @@ import java.util.List;
 @RequestMapping("/api/todo/")
 @RequiredArgsConstructor
 public class TodoController {
+    private final Logger _logger = LoggerFactory.getLogger(TodoController.class);
+
     private final TodoService_Impl _todoService;
 
     @GetMapping("all")
@@ -38,46 +43,70 @@ public class TodoController {
         //todoList.add(todo2);
         //todoList.add(todo3);
 
-        List<TodoDto> todoList = _todoService.getAlTodos();
+        try {
+            List<TodoDto> todoList = _todoService.getAlTodos();
 
-        return ResponseEntity.status(200).body(todoList);
+            _logger.info("Fetching all todos.");
+            return ResponseEntity.status(200).body(todoList);
+        } catch (Exception e) {
+            _logger.error("An error occurred while fetching all todos. Exception: {}", e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @PostMapping("add")
     public ResponseEntity<ErrorDto> addTodo(@RequestBody TodoDto dtoObj) {
         boolean result = _todoService.saveTodo(dtoObj);
 
-        if (result)
+        if (result) {
+            _logger.info("Todo added successfully.");
             return ResponseEntity.status(201).body(ErrorDto.builder()
                     .code(201)
                     .message("Todo added successfully.")
                     .build());
+        }
+
+        _logger.error("Todo could not be added.");
         return ResponseEntity.status(400).body(ErrorDto.builder()
                 .code(400)
                 .message("Todo could not be added.")
                 .build());
     }
 
-    @GetMapping("get")
-    public ResponseEntity<TodoDto> getTodo(@RequestParam String title) {
-        TodoDto todo = _todoService.getTodo(title);
-
-        if (todo != null)
-            return ResponseEntity.status(200).body(todo);
-        return ResponseEntity.status(404).body(new TodoDto());
-    }
-
     @PutMapping("update")
-    public ResponseEntity<ErrorDto> update(@RequestBody TodoDto dtoObj) {
+    public ResponseEntity<ErrorDto> updateTodo(@RequestBody TodoDto dtoObj) {
         boolean result = _todoService.updateTodo(dtoObj);
 
-        if (result)
+        if (result) {
+            _logger.info("Todo updated successfully.");
             return ResponseEntity.status(200).body(ErrorDto.builder()
                     .code(200)
                     .message("Todo updated successfully.")
                     .build());
+        }
+
+        _logger.error("Todo could not be updated.");
         return ResponseEntity.status(400).body(ErrorDto.builder()
                 .message("Todo could not be updated.")
+                .build());
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<ErrorDto> deleteTodo(@RequestBody TodoDto dtoObj) {
+        boolean result = _todoService.deleteTodo(dtoObj);
+
+        if (result) {
+            _logger.info("Todo deleted successfully.");
+            return ResponseEntity.status(200).body(ErrorDto.builder()
+                    .code(200)
+                    .message("Todo deleted successfully.")
+                    .build());
+        }
+
+        _logger.error("Todo could not be deleted.");
+        return ResponseEntity.status(400).body(ErrorDto.builder()
+                .code(400)
+                .message("Todo could not be deleted.")
                 .build());
     }
 }
