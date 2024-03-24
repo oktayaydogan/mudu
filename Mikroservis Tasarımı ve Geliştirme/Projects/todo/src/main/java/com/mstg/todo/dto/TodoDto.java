@@ -8,16 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TodoDto {
-    private Long id;
     private String title;
     private String detail;
-
-    /*
-    public TodoDto() {}
+    private boolean completed;
 
     public TodoDto(String title, String detail) {
         this.title = title;
         this.detail = detail;
+        this.completed = false;
     }
-    */
 }
