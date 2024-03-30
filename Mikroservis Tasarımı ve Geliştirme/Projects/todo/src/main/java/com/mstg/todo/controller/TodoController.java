@@ -1,12 +1,15 @@
 package com.mstg.todo.controller;
 
+import com.mstg.todo.dto.BaseResponseDto;
 import com.mstg.todo.dto.ErrorDto;
+import com.mstg.todo.dto.ExceptionDto;
 import com.mstg.todo.dto.TodoDto;
 import com.mstg.todo.model.Todo;
 import com.mstg.todo.service.impl.TodoService_Impl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,22 +58,18 @@ public class TodoController {
     }
 
     @PostMapping("add")
-    public ResponseEntity<ErrorDto> addTodo(@RequestBody TodoDto dtoObj) {
-        boolean result = _todoService.saveTodo(dtoObj);
-
-        if (result) {
+    public ResponseEntity<BaseResponseDto> addTodo(@RequestBody TodoDto dtoObj) {
+        try {
+            _todoService.saveTodo(dtoObj);
             _logger.info("Todo added successfully.");
-            return ResponseEntity.status(201).body(ErrorDto.builder()
-                    .code(201)
-                    .message("Todo added successfully.")
-                    .build());
+            return ResponseEntity.status(201).body(dtoObj);
+        } catch (DataIntegrityViolationException e) {
+            _logger.error("An error occurred while adding the todo. Exception: {}", e.getMessage());
+            return ResponseEntity.status(400).body(ExceptionDto.builder().message("Todo already exists.").build());
+        } catch (Exception e) {
+            _logger.error("An error occurred while adding the todo. Exception: {}", e.getMessage());
+            return ResponseEntity.status(500).body(ExceptionDto.builder().message(e.getMessage()).build());
         }
-
-        _logger.error("Todo could not be added.");
-        return ResponseEntity.status(400).body(ErrorDto.builder()
-                .code(400)
-                .message("Todo could not be added.")
-                .build());
     }
 
     @PutMapping("update")

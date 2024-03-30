@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TodoDto {
+public class TodoDto extends BaseResponseDto {
     private String title;
     private String detail;
     private boolean completed;
@@ -15,6 +15,6 @@ public class TodoDto {
     public TodoDto(String title, String detail) {
         this.title = title;
         this.detail = detail;
-        this.completed = false;
+        //this.completed = false;
     }
 }

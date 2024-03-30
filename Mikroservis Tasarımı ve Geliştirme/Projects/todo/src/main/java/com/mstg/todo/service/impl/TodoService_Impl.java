@@ -8,6 +8,7 @@ import com.mstg.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -76,17 +77,31 @@ public class TodoService_Impl implements TodoService {
     @Override
     public boolean saveTodo(TodoDto obj) {
         try {
+
+            // Optional<Todo> dbTodo = _todoRepository.findByTitle(obj.getTitle());
+
+            // if (dbTodo.isEmpty()) {
+            //     _logger.info("Todo already exists with title: {}", obj.getTitle());
+            //     throw new RuntimeException("Todo already exists with title: " + obj.getTitle());
+            // }
+
             Todo newTodo = Todo.builder()
                     .title(obj.getTitle())
                     .detail(obj.getDetail())
+                    .completed(false)
                     .build();
 
             Todo savedEntity = _todoRepository.save(newTodo);
             _logger.info("Todo saved: {}", savedEntity);
             return true;
+        } catch (DataIntegrityViolationException e) {
+            _logger.error("An error occurred while saving the todo. Exception: {}", e.getMessage());
+            throw new DataIntegrityViolationException(e.getMessage());
+            // return false;
         } catch (Exception e) {
             _logger.error("An error occurred while saving the todo. Exception: {}", e.getMessage());
-            return false;
+            throw new RuntimeException(e.getMessage());
+            // return false;
         }
     }
 
