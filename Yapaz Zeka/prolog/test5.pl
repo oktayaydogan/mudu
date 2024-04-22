@@ -37,3 +37,9 @@ babaanne(X, Y) :- anne(X, Z), baba(Z, Y).
 anneanne(X, Y) :- anne(X, Z), anne(Z, Y).
 
 buyukbaba(X, Y) :- baba(X, Z), ebeveyn(Z, Y).
+
+sever(X, elma) :- insan(X).
+
+büyük_ebeveyn(X, Y) :- ebeveyn(X, Z), ebeveyn(Z, Y).
+
+ata(X, Y) :- ebeveyn(X, Z), ata(Z, Y).
