@@ -23,5 +23,5 @@ services:
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=123
-      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/TODO-DB
+      - DATASOURCE_URL=jdbc:postgresql://postgres/TODO-DB
    # restart: always
